@@ -3,6 +3,9 @@ import React, { useState } from "react";
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [messageColor, setMessageColor] = useState("var(--ok)");
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -35,13 +38,37 @@ export default function Faq() {
     }
   ];
 
-  const handleWaitlist = (e: React.FormEvent) => {
+  const handleWaitlist = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailInput = document.getElementById("waitlist-email") as HTMLInputElement;
-    const msg = document.getElementById("waitlist-msg");
+    
     if (emailInput && emailInput.value.includes("@")) {
-      if (msg) msg.style.display = "block";
-      emailInput.value = "";
+      setIsSubmitting(true);
+      setMessage("");
+      
+      try {
+        const res = await fetch("/api/waitlist", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: emailInput.value }),
+        });
+        
+        if (res.ok) {
+          setMessage("You're on the list. We'll be in touch soon.");
+          setMessageColor("var(--ok)");
+          emailInput.value = "";
+        } else {
+          setMessage("Something went wrong. Please try again.");
+          setMessageColor("red");
+        }
+      } catch (error) {
+        setMessage("Something went wrong. Please try again.");
+        setMessageColor("red");
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -68,12 +95,16 @@ export default function Faq() {
             <h3>Join the early access waitlist</h3>
             <p>We&apos;re onboarding producers in batches. Drop your email and we&apos;ll let you know when you&apos;re in.</p>
             <form className="waitlist-form" onSubmit={handleWaitlist}>
-              <input type="email" id="waitlist-email" placeholder="your@email.com" required />
-              <button type="submit">Get early access</button>
+              <input type="email" id="waitlist-email" placeholder="your@email.com" required disabled={isSubmitting} />
+              <button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Joining..." : "Get early access"}
+              </button>
             </form>
-            <p id="waitlist-msg" style={{ marginTop: 14, fontSize: 13, color: "var(--ok)", display: "none" }}>
-              You&apos;re on the list. We&apos;ll be in touch soon.
-            </p>
+            {message && (
+              <p id="waitlist-msg" style={{ marginTop: 14, fontSize: 13, color: messageColor }}>
+                {message}
+              </p>
+            )}
           </div>
         </section>
       </div>
