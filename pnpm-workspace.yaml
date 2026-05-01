@@ -1,0 +1,7 @@
+packages:
+  - 'landing-page'
+  - 'desktop-app'
+
+ignoredBuiltDependencies:
+  - sharp
+  - unrs-resolver

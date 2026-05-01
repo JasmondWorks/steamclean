@@ -1,0 +1,8 @@
+{
+  "name": "steamclean-workspace",
+  "private": true,
+  "workspaces": [
+    "landing-page",
+    "desktop-app"
+  ]
+}

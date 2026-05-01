@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SteamClean — Reclaim your plugin disk space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Bricolage+Grotesque:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --brand:#2563EB;--brand-l:#EFF6FF;--brand-m:#BFDBFE;--brand-d:#1E40AF;
+  --ok:#16A34A;--ok-l:#F0FDF4;--warn:#D97706;--warn-l:#FFFBEB;
+  --t1:#0F172A;--t2:#475569;--t3:#94A3B8;
+  --bd:#E2E8F0;--sf:#F8FAFC;--wh:#FFFFFF;
+  --r:12px;--rs:8px;
+  --dn:'Bricolage Grotesque',sans-serif;
+  --sn:'Plus Jakarta Sans',sans-serif;
+}
+body{font-family:var(--sn);color:var(--t1);background:var(--wh);line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+nav{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 24px;max-width:1080px;margin:0 auto;
+  border-bottom:1px solid var(--bd);position:sticky;top:0;
+  background:rgba(255,255,255,0.95);backdrop-filter:blur(8px);z-index:100;
+}
+.logo{font-family:var(--dn);font-size:20px;font-weight:800;color:var(--t1);letter-spacing:-0.03em;text-decoration:none}
+.logo span{color:var(--brand)}
+.nav-links{display:flex;gap:28px;list-style:none}
+.nav-links a{font-size:14px;font-weight:500;color:var(--t2);text-decoration:none;transition:color 0.15s}
+.nav-links a:hover{color:var(--t1)}
+.nav-cta{background:var(--brand);color:#fff;padding:10px 20px;border-radius:var(--rs);font-size:14px;font-weight:600;border:none;cursor:pointer;font-family:var(--sn);transition:background 0.15s}
+.nav-cta:hover{background:var(--brand-d)}
+
+/* HERO */
+.hero{padding:80px 0 64px;text-align:center}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--brand-l);color:var(--brand-d);
+  font-size:12px;font-weight:700;padding:6px 14px;border-radius:100px;
+  margin-bottom:24px;letter-spacing:0.02em;
+}
+.badge-dot{width:6px;height:6px;background:var(--brand);border-radius:50%}
+h1{
+  font-family:var(--dn);font-size:clamp(2.4rem,5.5vw,4rem);
+  font-weight:800;line-height:1.08;letter-spacing:-0.04em;
+  color:var(--t1);margin-bottom:20px;
+  max-width:800px;margin-left:auto;margin-right:auto;
+}
+h1 .accent{color:var(--brand)}
+.hero-sub{
+  font-size:clamp(15px,2vw,18px);color:var(--t2);
+  max-width:540px;margin:0 auto 36px;line-height:1.75;
+}
+.hero-actions{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--brand);color:#fff;padding:15px 28px;
+  border-radius:var(--r);font-size:15px;font-weight:700;
+  border:none;cursor:pointer;font-family:var(--sn);
+  transition:background 0.15s;text-decoration:none;
+}
+.btn-primary:hover{background:var(--brand-d)}
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  background:transparent;color:var(--t1);padding:15px 28px;
+  border-radius:var(--r);font-size:15px;font-weight:600;
+  border:1.5px solid var(--bd);cursor:pointer;font-family:var(--sn);
+  transition:border-color 0.15s;text-decoration:none;
+}
+.btn-ghost:hover{border-color:#94A3B8}
+.hero-note{font-size:13px;color:var(--t3);margin-top:16px}
+
+/* STATS BAR */
+.stats-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  border:1px solid var(--bd);border-radius:var(--r);
+  overflow:hidden;margin-top:56px;
+}
+.stat-cell{padding:28px 20px;text-align:center;border-right:1px solid var(--bd);background:var(--wh)}
+.stat-cell:last-child{border-right:none}
+.stat-val{font-family:var(--dn);font-size:2rem;font-weight:800;letter-spacing:-0.04em;color:var(--t1);line-height:1}
+.stat-val.blue{color:var(--brand)}.stat-val.green{color:var(--ok)}
+.stat-label{font-size:12px;color:var(--t3);margin-top:8px;font-weight:500}
+
+/* SECTIONS */
+.section{padding:80px 0}
+.section-bg{background:var(--sf)}
+.section-dark{background:var(--t1)}
+.section-tag{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--brand);margin-bottom:14px}
+h2{font-family:var(--dn);font-size:clamp(1.7rem,3.5vw,2.5rem);font-weight:800;letter-spacing:-0.03em;line-height:1.15;margin-bottom:14px;color:var(--t1)}
+.section-dark h2{color:#fff}
+.section-sub{font-size:15px;color:var(--t2);max-width:500px;line-height:1.75}
+.section-dark .section-sub{color:var(--t3)}
+
+/* PROBLEM CARDS */
+.prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:44px}
+.prob-card{background:var(--wh);border:1px solid var(--bd);border-radius:var(--r);padding:28px 22px}
+.prob-icon{width:40px;height:40px;background:var(--sf);border:1px solid var(--bd);border-radius:var(--rs);display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:18px}
+.prob-card h3{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--t1)}
+.prob-card p{font-size:14px;color:var(--t2);line-height:1.65}
+
+/* APP MOCKUP */
+.mockup{background:var(--wh);border:1px solid var(--bd);border-radius:var(--r);overflow:hidden;margin-top:48px;box-shadow:0 4px 24px rgba(0,0,0,0.06)}
+.mockup-bar{background:var(--sf);border-bottom:1px solid var(--bd);padding:12px 18px;display:flex;align-items:center;gap:8px}
+.m-dot{width:10px;height:10px;border-radius:50%}
+.m-title{font-size:13px;font-weight:600;color:var(--t2);margin-left:8px}
+.mockup-body{display:grid;grid-template-columns:200px 1fr}
+.m-side{background:var(--wh);border-right:1px solid var(--bd);padding:16px 0}
+.m-side-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--t3);padding:0 14px 12px}
+.m-row{display:flex;justify-content:space-between;align-items:center;padding:9px 14px;font-size:13px}
+.m-row.active{background:var(--brand-l);color:var(--brand-d);font-weight:600}
+.m-row.idle{color:var(--t2)}
+.m-sz{font-size:11px;color:var(--t3)}.m-sz.red{color:#EF4444}
+.m-main{padding:24px}
+.m-main-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.09em;color:var(--t3);margin-bottom:16px}
+.m-kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px}
+.m-kpi{background:var(--sf);border-radius:var(--rs);padding:14px}
+.m-kpi-val{font-family:var(--dn);font-size:1.4rem;font-weight:800;letter-spacing:-0.03em;color:var(--t1);line-height:1}
+.m-kpi-val.g{color:var(--ok)}
+.m-kpi-label{font-size:11px;color:var(--t3);margin-top:4px}
+.m-bar-wrap{margin-bottom:12px}
+.m-bar{height:6px;background:var(--bd);border-radius:100px;overflow:hidden;margin-bottom:5px}
+.m-bar-fill{height:100%;border-radius:100px}
+.m-bar-label{font-size:11px;color:var(--t3);display:flex;justify-content:space-between}
+.m-action{background:var(--brand);color:#fff;font-size:13px;font-weight:600;padding:10px 18px;border-radius:var(--rs);border:none;cursor:pointer;font-family:var(--sn);margin-top:14px;display:inline-flex;align-items:center;gap:6px}
+
+/* STEPS */
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:32px}
+.step-card{border:1px solid var(--bd);border-radius:var(--r);padding:26px 22px;background:var(--wh)}
+.step-card.hi{border-color:var(--brand);background:var(--brand-l)}
+.step-num{width:32px;height:32px;background:var(--brand);border-radius:50%;color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:14px}
+.step-card.hi .step-num{background:var(--brand-d)}
+.step-card h3{font-size:15px;font-weight:700;margin-bottom:8px;color:var(--t1)}
+.step-card p{font-size:13px;color:var(--t2);line-height:1.65}
+.pill{display:inline-block;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;margin-top:12px}
+.pill-ok{background:var(--ok-l);color:var(--ok)}
+.pill-warn{background:var(--warn-l);color:var(--warn)}
+
+/* PLUGINS */
+.plugin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-top:44px}
+.plugin-card{background:var(--wh);border:1px solid var(--bd);border-radius:var(--r);padding:22px 18px;position:relative}
+.plugin-card.dim{opacity:0.45}
+.plugin-name{font-size:15px;font-weight:700;color:var(--t1);margin-bottom:4px}
+.plugin-by{font-size:12px;color:var(--t3)}
+.plugin-pill{position:absolute;top:12px;right:12px;font-size:11px;font-weight:700;padding:3px 9px;border-radius:100px}
+.pill-live{background:var(--ok-l);color:var(--ok)}
+.pill-soon{background:var(--sf);color:var(--t3);border:1px solid var(--bd)}
+
+/* TRADEOFFS */
+.trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:36px}
+.trade-card{border-radius:var(--r);padding:24px;border:1px solid}
+.trade-card.good{background:var(--ok-l);border-color:#BBF7D0}
+.trade-card.caution{background:var(--warn-l);border-color:#FDE68A}
+.trade-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px}
+.trade-card.good .trade-label{color:var(--ok)}.trade-card.caution .trade-label{color:var(--warn)}
+.trade-card p{font-size:13px;color:var(--t2);line-height:1.65}
+
+/* DISCLAIMER */
+.disclaimer{background:var(--warn-l);border:1px solid #FDE68A;border-radius:var(--r);padding:28px;margin-top:20px}
+.disclaimer h3{font-size:14px;font-weight:700;color:var(--warn);margin-bottom:10px}
+.disclaimer p{font-size:13px;color:#92400E;line-height:1.7;margin-bottom:8px}
+.disclaimer p:last-child{margin-bottom:0}
+.disclaimer strong{color:#78350F}
+
+/* FAQ */
+.faq-list{margin-top:40px;display:flex;flex-direction:column;gap:2px}
+.faq-item{border:1px solid var(--bd);border-radius:var(--rs);background:var(--wh);overflow:hidden}
+.faq-q{width:100%;text-align:left;font-size:15px;font-weight:600;color:var(--t1);padding:18px 22px;background:none;border:none;cursor:pointer;font-family:var(--sn);display:flex;justify-content:space-between;align-items:center}
+.faq-q:hover{background:var(--sf)}
+.faq-a{display:none;padding:0 22px 18px;font-size:14px;color:var(--t2);line-height:1.7}
+.faq-item.open .faq-a{display:block}
+.faq-item.open .faq-q{background:var(--sf)}
+.faq-icon{font-size:18px;color:var(--t3);transition:transform 0.2s;line-height:1}
+.faq-item.open .faq-icon{transform:rotate(45deg)}
+
+/* WAITLIST */
+.waitlist-box{background:var(--brand-l);border:1px solid var(--brand-m);border-radius:var(--r);padding:40px;text-align:center;margin-top:56px}
+.waitlist-box h3{font-family:var(--dn);font-size:1.5rem;font-weight:800;color:var(--t1);margin-bottom:8px;letter-spacing:-0.02em}
+.waitlist-box p{font-size:14px;color:var(--t2);margin-bottom:24px}
+.waitlist-form{display:flex;gap:10px;max-width:440px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.waitlist-form input{flex:1;min-width:200px;padding:12px 16px;border:1.5px solid var(--brand-m);border-radius:var(--rs);font-size:14px;font-family:var(--sn);color:var(--t1);background:var(--wh);outline:none}
+.waitlist-form input:focus{border-color:var(--brand)}
+.waitlist-form button{background:var(--brand);color:#fff;padding:12px 22px;border-radius:var(--rs);font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:var(--sn);white-space:nowrap}
+
+/* CTA */
+.cta-section{background:var(--t1);padding:96px 0;text-align:center}
+.cta-section h2{color:#fff;margin-bottom:14px}
+.cta-section p{color:var(--t3);font-size:15px;margin-bottom:36px}
+.cta-section .btn-primary{background:#fff;color:var(--t1);font-size:16px;padding:16px 32px}
+.cta-section .btn-primary:hover{background:#F1F5F9}
+
+/* FOOTER */
+footer{padding:32px 24px;max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border-top:1px solid var(--bd)}
+footer p{font-size:13px;color:var(--t3)}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav-links{display:none}
+  h1{font-size:2.2rem}
+  .hero{padding:48px 0 40px}
+  .stats-bar{grid-template-columns:1fr 1fr}
+  .stat-cell:nth-child(2){border-right:none}
+  .stat-cell:nth-child(3){border-top:1px solid var(--bd)}
+  .stat-cell:nth-child(4){border-top:1px solid var(--bd);border-right:none}
+  .mockup-body{grid-template-columns:1fr}
+  .m-side{border-right:none;border-bottom:1px solid var(--bd)}
+  .m-kpi-row{grid-template-columns:1fr 1fr}
+  .trade-grid{grid-template-columns:1fr}
+  .hero-actions{flex-direction:column;align-items:stretch;max-width:320px;margin-left:auto;margin-right:auto}
+  .btn-primary,.btn-ghost{justify-content:center}
+  footer{flex-direction:column;text-align:center}
+  .section{padding:56px 0}
+}
+@media(max-width:480px){
+  .stats-bar{grid-template-columns:1fr}
+  .stat-cell{border-right:none !important;border-bottom:1px solid var(--bd)}
+  .stat-cell:last-child{border-bottom:none}
+  h1{font-size:1.9rem}
+  .prob-grid{grid-template-columns:1fr}
+  .steps-grid{grid-template-columns:1fr}
+  .plugin-grid{grid-template-columns:1fr 1fr}
+  .m-kpi-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">steam<span>clean</span></a>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#plugins">Plugins</a></li>
+    <li><a href="#faq">FAQ</a></li>
+  </ul>
+  <button class="nav-cta" onclick="document.getElementById('waitlist-email').focus()">Get early access</button>
+</nav>
+
+<!-- HERO -->
+<div class="wrap">
+<section class="hero">
+  <div class="badge"><div class="badge-dot"></div>Music production tool</div>
+  <h1>You use 1% of your plugin library.<br><span class="accent">Reclaim the other 99%.</span></h1>
+  <p class="hero-sub">SteamClean scans your VST sound library, traces every file your patches actually depend on, and safely archives everything else — no guesswork, no broken presets.</p>
+  <div class="hero-actions">
+    <a href="#waitlist" class="btn-primary">
+      Try SteamClean free
+      <svg width="16" height="16" fill="none" viewBox="0 0 16 16"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <a href="#how" class="btn-ghost">See how it works</a>
+  </div>
+  <p class="hero-note">Free during early access &nbsp;·&nbsp; Chrome &amp; Edge on Windows &nbsp;·&nbsp; No install needed</p>
+
+  <div class="stats-bar">
+    <div class="stat-cell">
+      <div class="stat-val">64 GB</div>
+      <div class="stat-label">Omnisphere default install</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val blue">~3 GB</div>
+      <div class="stat-label">What most producers use</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val green">61 GB</div>
+      <div class="stat-label">Recoverable disk space</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val">0</div>
+      <div class="stat-label">Presets broken when done right</div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- PROBLEM -->
+<div class="section-bg">
+<div class="wrap">
+<section class="section">
+  <div class="section-tag">The problem</div>
+  <h2>VST vendors ship the entire universe.<br>You only need your neighbourhood.</h2>
+  <p class="section-sub">There's no official way to slim these libraries down. Until now.</p>
+  <div class="prob-grid">
+    <div class="prob-card">
+      <div class="prob-icon">📦</div>
+      <h3>Bloated by design</h3>
+      <p>Vendors require the full library installed for "patch compatibility" — even if you only use 20 presets out of 14,000.</p>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">🚫</div>
+      <h3>No selective install</h3>
+      <p>The official advice is "buy a bigger drive." That's not a solution. SteamClean is.</p>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">💥</div>
+      <h3>Manual deletion breaks things</h3>
+      <p>There's no dependency map. Guessing wrong means broken patches in the middle of a session.</p>
+    </div>
+    <div class="prob-card">
+      <div class="prob-icon">🐌</div>
+      <h3>Slower DAW startup</h3>
+      <p>Large unindexed libraries slow your plugin browser — even for sounds you've never once opened.</p>
+    </div>
+  </div>
+</section>
+</div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="wrap">
+<section class="section" id="how">
+  <div class="section-tag">How it works</div>
+  <h2>Four steps. Fully reversible.<br>Nothing moved without your say.</h2>
+
+  <div class="mockup">
+    <div class="mockup-bar">
+      <div class="m-dot" style="background:#FF5F57"></div>
+      <div class="m-dot" style="background:#FEBC2E"></div>
+      <div class="m-dot" style="background:#28C840"></div>
+      <span class="m-title">SteamClean — Omnisphere 2.8</span>
+    </div>
+    <div class="mockup-body">
+      <div class="m-side">
+        <div class="m-side-label">Sound sources</div>
+        <div class="m-row idle"><span>Acoustic</span><span class="m-sz red">4.2 GB</span></div>
+        <div class="m-row active"><span>Atmospheres</span><span class="m-sz">3.8 GB</span></div>
+        <div class="m-row idle"><span>Bass</span><span class="m-sz red">2.1 GB</span></div>
+        <div class="m-row idle"><span>Pads</span><span class="m-sz">1.4 GB</span></div>
+        <div class="m-row idle"><span>Synth</span><span class="m-sz red">6.7 GB</span></div>
+        <div class="m-row idle"><span>Orchestral</span><span class="m-sz red">8.3 GB</span></div>
+        <div class="m-row idle"><span>Keys</span><span class="m-sz">0.9 GB</span></div>
+      </div>
+      <div class="m-main">
+        <div class="m-main-label">Dependency analysis — all patches</div>
+        <div class="m-kpi-row">
+          <div class="m-kpi">
+            <div class="m-kpi-val">61.4 GB</div>
+            <div class="m-kpi-label">Total library</div>
+          </div>
+          <div class="m-kpi">
+            <div class="m-kpi-val g">2.8 GB</div>
+            <div class="m-kpi-label">In active use</div>
+          </div>
+          <div class="m-kpi">
+            <div class="m-kpi-val">58.6 GB</div>
+            <div class="m-kpi-label">Safe to archive</div>
+          </div>
+        </div>
+        <div class="m-bar-wrap">
+          <div class="m-bar"><div class="m-bar-fill" style="width:5%;background:#16A34A"></div></div>
+          <div class="m-bar-label"><span>In active use</span><span>5%</span></div>
+        </div>
+        <div class="m-bar-wrap">
+          <div class="m-bar"><div class="m-bar-fill" style="width:95%;background:#BFDBFE"></div></div>
+          <div class="m-bar-label"><span>Eligible for archiving</span><span>95%</span></div>
+        </div>
+        <button class="m-action">
+          Archive unused files
+          <svg width="14" height="14" fill="none" viewBox="0 0 14 14"><path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>Select your library folder</h3>
+      <p>Point SteamClean at your STEAM folder. Everything is read-only until you explicitly confirm an action.</p>
+      <span class="pill pill-ok">Read-only scan</span>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>Paste your patch list</h3>
+      <p>Add the preset names you use. SteamClean parses every patch file and traces the full dependency tree — including nested references.</p>
+      <span class="pill pill-ok">Full dependency trace</span>
+    </div>
+    <div class="step-card hi">
+      <div class="step-num">3</div>
+      <h3>Review what's safe</h3>
+      <p>Clear breakdown of used vs unused files with a confidence score for anything uncertain. Nothing moves until you approve it.</p>
+      <span class="pill pill-warn">You approve everything</span>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h3>Archive, don't delete</h3>
+      <p>Files move to _SteamCleanArchive inside your library folder. Restore any file in one click. Hard delete is opt-in only.</p>
+      <span class="pill pill-ok">Fully reversible</span>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- PLUGINS -->
+<div class="section-bg" id="plugins">
+<div class="wrap">
+<section class="section">
+  <div class="section-tag">Plugin support</div>
+  <h2>Built for the biggest libraries first.</h2>
+  <p class="section-sub">Omnisphere is fully supported today. More plugins ship as we validate the approach with real producers.</p>
+  <div class="plugin-grid">
+    <div class="plugin-card">
+      <div class="plugin-pill pill-live">Live</div>
+      <div class="plugin-name">Omnisphere</div>
+      <div class="plugin-by">Spectrasonics</div>
+    </div>
+    <div class="plugin-card dim">
+      <div class="plugin-pill pill-soon">Soon</div>
+      <div class="plugin-name">Kontakt</div>
+      <div class="plugin-by">Native Instruments</div>
+    </div>
+    <div class="plugin-card dim">
+      <div class="plugin-pill pill-soon">Soon</div>
+      <div class="plugin-name">Keyscape</div>
+      <div class="plugin-by">Spectrasonics</div>
+    </div>
+    <div class="plugin-card dim">
+      <div class="plugin-pill pill-soon">Soon</div>
+      <div class="plugin-name">Trilian</div>
+      <div class="plugin-by">Spectrasonics</div>
+    </div>
+    <div class="plugin-card dim">
+      <div class="plugin-pill pill-soon">Soon</div>
+      <div class="plugin-name">Serum</div>
+      <div class="plugin-by">Xfer Records</div>
+    </div>
+    <div class="plugin-card dim">
+      <div class="plugin-pill pill-soon">Soon</div>
+      <div class="plugin-name">Spire</div>
+      <div class="plugin-by">Reveal Sound</div>
+    </div>
+  </div>
+</section>
+</div>
+</div>
+
+<!-- TRADEOFFS -->
+<div class="wrap">
+<section class="section">
+  <div class="section-tag">Honest tradeoffs</div>
+  <h2>We'll tell you what this can't do.</h2>
+  <p class="section-sub">Trust is everything when you're letting software near your library files.</p>
+  <div class="trade-grid">
+    <div class="trade-card good">
+      <div class="trade-label">What works well</div>
+      <p>Patches with explicit file references in their XML — which covers most factory and third-party presets — are mapped with high confidence. The dependency trace is fully deterministic.</p>
+    </div>
+    <div class="trade-card caution">
+      <div class="trade-label">Known limitation</div>
+      <p>Some patches use dynamic paths that only resolve inside the plugin at runtime. These are flagged "uncertain" and excluded from archiving by default — we'd rather be safe.</p>
+    </div>
+    <div class="trade-card good">
+      <div class="trade-label">What works well</div>
+      <p>Archive mode means nothing is truly gone. Every file is restorable individually or in bulk at any point before you opt into hard delete.</p>
+    </div>
+    <div class="trade-card caution">
+      <div class="trade-label">Known limitation</div>
+      <p>New third-party patch banks purchased after archiving may reference archived source files. We'll surface these automatically when you load a new library.</p>
+    </div>
+  </div>
+  <div class="disclaimer">
+    <h3>⚠ Before you use SteamClean — please read</h3>
+    <p>SteamClean moves files at the filesystem level. While the archive system is designed to be fully reversible, <strong>we strongly recommend backing up your full library to an external drive before running any operation.</strong></p>
+    <p>SteamClean is not affiliated with Spectrasonics or any plugin vendor. Spectrasonics' official position is that the full library must remain intact — this tool operates at the file level to work around that. <strong>Vendor support may not apply to modified installations.</strong></p>
+    <p>Never hard-delete until you've run at least one full production session with the archived library and confirmed every patch loads correctly.</p>
+  </div>
+</section>
+</div>
+
+<!-- FAQ -->
+<div class="section-bg">
+<div class="wrap">
+<section class="section" id="faq">
+  <div class="section-tag">FAQ</div>
+  <h2>Common questions.</h2>
+  <div class="faq-list">
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Will this break my existing projects?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Only if you archive a file a patch depends on and we missed the reference. That's why we have a confidence score system and exclude uncertain files by default. Always use archive mode (not hard delete) for your first run and test in your DAW before clearing the archive.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Does this work with third-party Omnisphere patch banks?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes — as long as those patches use standard .prt_omn format with explicit file references, SteamClean traces them exactly like factory patches. Some very old or non-standard third-party formats may be flagged as uncertain.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        What browser do I need?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">SteamClean uses the File System Access API, which is supported in Chrome and Edge on Windows. Firefox and Safari don't support this API yet. We'll show a clear message if your browser isn't supported.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Does my library get uploaded anywhere?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">No. Everything runs locally in your browser. Your files never leave your machine — not even the patch names or file paths. SteamClean reads and writes directly to your disk with no server involved.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Can I undo everything after archiving?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Yes. All archived files move to a _SteamCleanArchive folder inside your library. You can restore individual files or the entire archive at any time. Hard delete requires a separate explicit confirmation and is irreversible.</div>
+    </div>
+    <div class="faq-item">
+      <button class="faq-q" onclick="this.parentElement.classList.toggle('open')">
+        Is this against Spectrasonics' terms?
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-a">Spectrasonics' official position is that the full library must remain installed. SteamClean operates at the file system level to work around this. You own the files on your machine — but be aware that Spectrasonics' support team may not assist with issues that arise on a modified installation.</div>
+    </div>
+  </div>
+
+  <!-- WAITLIST -->
+  <div class="waitlist-box" id="waitlist">
+    <h3>Join the early access waitlist</h3>
+    <p>We're onboarding producers in batches. Drop your email and we'll let you know when you're in.</p>
+    <div class="waitlist-form">
+      <input type="email" id="waitlist-email" placeholder="your@email.com">
+      <button onclick="handleWaitlist()">Get early access</button>
+    </div>
+    <p id="waitlist-msg" style="margin-top:14px;font-size:13px;color:var(--ok);display:none">You're on the list. We'll be in touch soon.</p>
+  </div>
+</section>
+</div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="wrap">
+    <h2>Stop paying for disk space<br>you never use.</h2>
+    <p>Free during early access &nbsp;·&nbsp; Works on Chrome &amp; Edge &nbsp;·&nbsp; Windows</p>
+    <a href="#waitlist" class="btn-primary" style="background:#fff;color:var(--t1);display:inline-flex;padding:16px 32px;font-size:16px">Get started free →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <a href="#" class="logo" style="font-size:17px;text-decoration:none;color:var(--t3)">steam<span style="color:var(--brand)">clean</span></a>
+  <p>Made by producers, for producers</p>
+  <p>Not affiliated with Spectrasonics or any plugin vendor</p>
+</footer>
+
+<script>
+function handleWaitlist(){
+  const email = document.getElementById('waitlist-email').value;
+  if(!email || !email.includes('@')) return;
+  document.getElementById('waitlist-msg').style.display='block';
+  document.getElementById('waitlist-email').value='';
+}
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const target=document.querySelector(a.getAttribute('href'));
+    if(target){e.preventDefault();target.scrollIntoView({behavior:'smooth',block:'start'})}
+  });
+});
+</script>
+</body>
+</html>
